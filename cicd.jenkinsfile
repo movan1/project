@@ -1,9 +1,7 @@
 node('master') {
 
         stage('Checkout git') {
-            checkout scm
-            sh 'ls -lah'
-            sh 'pwd'
+            sh 'git clone https://github.com/movan1/project.git'
         }
 
         stage('Install Dependencies') {
