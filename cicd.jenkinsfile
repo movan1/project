@@ -3,6 +3,7 @@ node('master') {
         stage('Checkout git') {
             checkout scm
             sh 'ls -lah'
+            sh 'pwd'
         }
 
         stage('Install Dependencies') {
