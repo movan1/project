@@ -8,6 +8,7 @@ node('master') {
         stage('Install Dependencies') {
 
             dir("./frontend/") {
+                sh 'rm -rf ./node_modules'
                 sh 'npm install'
             }
 
