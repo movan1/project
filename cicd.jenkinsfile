@@ -8,35 +8,34 @@ node('master') {
         stage('Install Dependencies') {
 
             dir("./frontend/") {
+                sh 'bun i'
+            }
+
+            dir("./backend/") {
                 sh 'ls -lah'
                 sh 'bun i'
             }
 
-//             dir("./backend/") {
-//                 sh 'ls -lah'
-//                 sh 'npm install'
-//             }
+        }
+
+        stage('Build frontend') {
+            dir("./frontend/") {
+                sh 'npm run build'
+            }
+
 
         }
-//
-//         stage('Build frontend') {
-//             dir("./frontend/") {
-//                 sh 'npm run build'
-//             }
-//
-//
-//         }
-//
-//         stage('Sync') {
-//
-//             dir("./frontend/") {
-//                 sh 'cp -rf ./dist/* /srv/frontend/movan/'
-//             }
-//
-//             sh 'cp -rf ./backend/* /srv/backend/movan/'
-//
-//
-//
-//         }
+
+        stage('Sync') {
+
+            dir("./frontend/") {
+                sh 'cp -rf ./dist/* /srv/frontend/movan/'
+            }
+
+            sh 'cp -rf ./backend/* /srv/backend/movan/'
+
+
+
+        }
 
 }
