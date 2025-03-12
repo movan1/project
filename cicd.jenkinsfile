@@ -1,7 +1,7 @@
 node('master') {
 
         stage('Checkout git') {
-            sh 'git clone https://github.com/movan1/project.git'
+            sh 'git pull https://github.com/movan1/project.git'
             dir("./frontend/") {
                 sh 'rm -rf ./node_modules'
                 sh 'npm install'
