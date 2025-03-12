@@ -1,8 +1,4 @@
 node('master') {
-        environment {
-            HOME = '/tmp'
-            NPM_CONFIG_CACHE = '/tmp/.npm'
-        }
 
         stage('Checkout git') {
             checkout scm
