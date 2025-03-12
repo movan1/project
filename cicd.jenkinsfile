@@ -2,38 +2,39 @@ node('master') {
 
         stage('Checkout git') {
             checkout scm
+            sh 'ls -lah'
         }
 
-        stage('Install Dependencies') {
-
-            dir("./frontend/") {
-                sh 'npm install'
-            }
-
-            dir("./backend/") {
-                sh 'npm install'
-            }
-
-        }
-
-        stage('Build frontend') {
-            dir("./frontend/") {
-                sh 'npm run build'
-            }
-
-
-        }
-
-        stage('Sync') {
-
-            dir("./frontend/") {
-                sh 'cp -rf ./dist/* /srv/frontend/movan/'
-            }
-
-            sh 'cp -rf ./backend/* /srv/backend/movan/'
-
-
-
-        }
+//         stage('Install Dependencies') {
+//
+//             dir("./frontend/") {
+//                 sh 'npm install'
+//             }
+//
+//             dir("./backend/") {
+//                 sh 'npm install'
+//             }
+//
+//         }
+//
+//         stage('Build frontend') {
+//             dir("./frontend/") {
+//                 sh 'npm run build'
+//             }
+//
+//
+//         }
+//
+//         stage('Sync') {
+//
+//             dir("./frontend/") {
+//                 sh 'cp -rf ./dist/* /srv/frontend/movan/'
+//             }
+//
+//             sh 'cp -rf ./backend/* /srv/backend/movan/'
+//
+//
+//
+//         }
 
 }
