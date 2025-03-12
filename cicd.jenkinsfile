@@ -8,19 +8,20 @@ node('master') {
         stage('Install Dependencies') {
 
             dir("./frontend/") {
-                sh 'bun i'
+                sh 'npm config set cache /tmp/.npm'
+                sh 'npm install'
             }
 
             dir("./backend/") {
                 sh 'ls -lah'
-                sh 'bun i'
+                sh 'npm install'
             }
 
         }
 
         stage('Build frontend') {
             dir("./frontend/") {
-                sh 'bun run build'
+                sh 'npm run build'
             }
 
 
