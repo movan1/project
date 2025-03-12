@@ -20,7 +20,4 @@ node('master') {
             sh 'cp -rf ./backend/* /srv/backend/movan/'
         }
 
-        }
-
-
 }
