@@ -9,14 +9,16 @@ node('master') {
 
             dir("./frontend/") {
                 sh 'ls -lah'
-                sh 'rm -rf ./node_modules'
+                sh 'whoami'
+                sh 'node -v'
                 sh 'npm install'
+                sh 'bun i'
             }
 
-            dir("./backend/") {
-                sh 'ls -lah'
-                sh 'npm install'
-            }
+//             dir("./backend/") {
+//                 sh 'ls -lah'
+//                 sh 'npm install'
+//             }
 
         }
 //
