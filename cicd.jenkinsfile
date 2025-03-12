@@ -20,7 +20,7 @@ node('master') {
 
         stage('Build frontend') {
             dir("./frontend/") {
-                sh 'npm run build'
+                sh 'bun run build'
             }
 
 
