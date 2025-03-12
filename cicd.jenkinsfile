@@ -9,6 +9,7 @@ node('master') {
 
             dir("./frontend/") {
                 sh 'ls -lah'
+                sh 'rm -rf ./node_modules'
                 sh 'npm install'
             }
 
