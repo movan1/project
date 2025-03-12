@@ -12,7 +12,6 @@ node('master') {
         stage('Install Dependencies') {
 
             dir("./frontend/") {
-                sh 'npm config set cache /tmp/.npm'
                 sh 'npm install'
             }
 
