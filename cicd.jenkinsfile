@@ -5,17 +5,19 @@ node('master') {
             sh 'ls -lah'
         }
 
-//         stage('Install Dependencies') {
-//
-//             dir("./frontend/") {
-//                 sh 'npm install'
-//             }
-//
-//             dir("./backend/") {
-//                 sh 'npm install'
-//             }
-//
-//         }
+        stage('Install Dependencies') {
+
+            dir("./frontend/") {
+                sh 'ls -lah'
+                sh 'npm install'
+            }
+
+            dir("./backend/") {
+                sh 'ls -lah'
+                sh 'npm install'
+            }
+
+        }
 //
 //         stage('Build frontend') {
 //             dir("./frontend/") {
