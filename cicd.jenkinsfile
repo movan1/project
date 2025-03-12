@@ -9,9 +9,6 @@ node('master') {
 
             dir("./frontend/") {
                 sh 'ls -lah'
-                sh 'whoami'
-                sh 'node -v'
-                sh 'npm install'
                 sh 'bun i'
             }
 
