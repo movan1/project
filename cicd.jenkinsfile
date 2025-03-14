@@ -1,23 +1,28 @@
 node('master') {
 
         stage('Checkout git') {
-            sh 'git pull https://github.com/movan1/project.git'
-            dir("./frontend/") {
-                sh 'rm -rf ./node_modules'
-                sh 'npm install'
-                        }
-            dir("./backend/") {
-                sh 'ls -lah'
-                sh 'npm install'
-            }
-            dir("./frontend/") {
-                sh 'npm run build'
-            }
-            dir("./frontend/") {
-                sh 'cp -rf ./dist/* /srv/frontend/movan/'
-            }
-
-            sh 'cp -rf ./backend/* /srv/backend/movan/'
+            checkout scm
         }
 
+        stage('Install Dependencies') {
+                dir("./frontend/") {
+                    sh 'npm install'
+                }
+                dir("./backend/") {
+                    sh 'npm install'
+                }
+        }
+
+        stage('Build') {
+                dir("./frontend/") {
+                    sh 'npm run build'
+                }
+        }
+
+        stage('Sync') {
+                dir("./frontend/") {
+                    sh 'cp -rf ./dist/* /srv/frontend/movan/'
+                }
+                sh 'cp -rf ./backend/* /srv/backend/movan/'
+        }
 }
