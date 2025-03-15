@@ -18,7 +18,8 @@ const tipsProcent = [
   { emojie: '😊', percent: 10 },
   { emojie: '😏', percent: 15 },
   { emojie: '😘', percent: 20 },
-  { emojie: '🤩', percent: 25 }];
+  { emojie: '🤩', percent: 25 }
+];
 
 export const OrderPage: FC = () => {
   const [getOrder, { data: order }] = useLazyGetOrderByTableQuery();

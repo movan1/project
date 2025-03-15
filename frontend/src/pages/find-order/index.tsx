@@ -26,11 +26,10 @@ export const FindOrderPage: FC = () => {
             type="number"
           />
           <Button
-            className="w-1/2 mx-auto"
+            className="w-1/2 mx-auto bg-zinc-600"
             color="primary"
             isDisabled={!table}
             onPress={handleRedirectToOrder}
-            variant="shadow"
           >
             Найти заказ
           </Button>

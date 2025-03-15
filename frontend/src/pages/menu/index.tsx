@@ -48,7 +48,7 @@ export const MenuPage: FC = () => {
             to={`${paths.menu.path}/${String(x.id)}`}
           >
             <Chip
-              color={x.id === Number(menuId) ? 'primary' : 'default'}
+              color={x.id === Number(menuId) ? 'success' : 'default'}
               variant="shadow"
             >
               {x.name}

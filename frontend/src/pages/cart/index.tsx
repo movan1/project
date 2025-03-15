@@ -103,7 +103,7 @@ export const CartPage: FC = () => {
           <div className="flex flex-col gap-5">
             <Divider />
             <Button
-              className="w-full text-amber-50 font-mono"
+              className="w-full bg-zinc-600 text-amber-50 font-mono mx-auto"
               color="success"
               onPress={handleCreateOrder}
               size="lg"
