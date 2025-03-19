@@ -1,17 +1,18 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
+import { Logo } from '@shared/assets';
 import { userPaths } from '@shared/router';
 
 export const MainPage: FC = () => (
   <div className="flex-grow flex items-center justify-center border-1">
     <div className="flex flex-col gap-5 w-10/12">
       <div className="flex flex-col justify-center items-center">
-        <span className="text-6xl mb-14 font-sans">
-          <b>Х5</b>
+        <div className="text-6xl mb-14 font-sans flex items-center justify-center gap-2">
+          <img alt="" className="w-1/2" src={Logo} />
           {' '}
-          <span className="italic">Кулинария</span>
-        </span>
+          <span className="translate-y-5 text-4xl font-bold font-sacramento">Кулинария</span>
+        </div>
       </div>
       {Object.values(userPaths).map((x, i) => i !== 0 && (
         <Link
