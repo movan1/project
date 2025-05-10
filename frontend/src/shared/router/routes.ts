@@ -47,10 +47,10 @@ const sigUserPaths = {
     path: '/cart',
     title: 'Корзина'
   },
-  order: {
-    icon: 'fas fa-wallet',
-    path: '/order',
-    title: 'Оплата стола'
+  orders: {
+    icon: 'fas fa-receipt',
+    path: '/orders',
+    title: 'Заказы'
   }
 };
 export const userPaths = sigUserPaths;

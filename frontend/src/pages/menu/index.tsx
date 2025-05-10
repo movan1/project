@@ -61,7 +61,7 @@ export const MenuPage: FC = () => {
           isLoading && (
             <div className="flex-grow flex items-center justify-center">
               <Spinner
-                color="danger"
+                color="success"
                 size="lg"
               />
             </div>

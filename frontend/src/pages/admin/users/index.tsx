@@ -19,7 +19,10 @@ import {
   TableBody,
   TableCell,
   TableColumn,
-  TableHeader, TableRow, getKeyValue, useDisclosure
+  TableHeader,
+  TableRow,
+  getKeyValue,
+  useDisclosure
 } from '@nextui-org/react';
 
 import {

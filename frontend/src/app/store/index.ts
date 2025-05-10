@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { cartSlice } from '@entities/cart';
 import { menuApi } from '@entities/menu';
-import { ordersApi } from '@entities/order';
+import { orderSlice, ordersApi } from '@entities/order';
 import { productApi, productSlice } from '@entities/product';
 import { tablesApi } from '@entities/table';
 import { userApi, userSlice } from '@entities/user';
@@ -20,6 +20,7 @@ export const store = configureStore({
     [cartSlice.name]: cartSlice.reducer,
     [menuApi.reducerPath]: menuApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
+    [orderSlice.name]: orderSlice.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [productSlice.name]: productSlice.reducer,
     [tablesApi.reducerPath]: tablesApi.reducer,

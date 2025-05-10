@@ -10,6 +10,7 @@ import {
   UserBadge, clearToken, setToken
 } from '@entities/user';
 
+import { Logo } from '@shared/assets';
 import { useUser } from '@shared/hooks';
 import { useAppDispatch, useAppSelector } from '@shared/lib';
 import { adminPaths, paths } from '@shared/router';
@@ -41,24 +42,24 @@ export const AdminPage: FC = () => {
   return (
     <div>
       <Navbar
-        className="bg-gray-900 text-amber-50"
+        className="bg-slate-700 text-amber-50"
         maxWidth="full"
       >
         <NavbarBrand>
-          <p className="font-mono text-inherit text-3xl">La&apos;Vita</p>
+          <img alt="" className="w-1/12" src={Logo} />
         </NavbarBrand>
         <UserBadge />
       </Navbar>
       <div className="flex relative">
-        <div className="bg-gray-900 text-amber-50 min-h-[calc(100vh_-_64px)] w-[200px] fixed top-[64px]">
+        <div className="bg-slate-700 text-amber-50 min-h-[calc(100vh_-_64px)] w-[200px] fixed top-[64px]">
           <div className="flex flex-col p-3 gap-2">
             {Object.values(adminPaths).slice(1)
               .filter((x) => x.isAdmin === isAdmin() || !x.isAdmin)
               .map((x) => (
                 <Link
                   className={classNames(
-                    'flex items-center gap-4 py-2 px-3 rounded transition',
-                    { 'bg-rose-500': isCurrentRoute(x.path), 'hover:bg-gray-700': !isCurrentRoute(x.path) }
+                    'flex items-center gap-4 py-2 px-3 rounded transition font-bold',
+                    { 'bg-[#5faf2d]': isCurrentRoute(x.path), 'hover:bg-gray-700': !isCurrentRoute(x.path) }
                   )}
                   key={x.path}
                   to={x.path}

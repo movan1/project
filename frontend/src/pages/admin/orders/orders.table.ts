@@ -24,10 +24,6 @@ export const columns = [
     label: 'STATUS'
   },
   {
-    key: 'name',
-    label: 'WAITER'
-  },
-  {
     key: 'orderTable',
     label: 'TABLE'
   },

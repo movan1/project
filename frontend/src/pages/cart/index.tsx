@@ -13,7 +13,7 @@ import { ProductInCart } from '@widgets/product-in-cart';
 import { useCreateUserOrderMutation } from '@entities/order';
 import { useGetProductsByIDsMutation } from '@entities/product';
 
-import { useProduct } from '@shared/hooks';
+import { useOrders, useProduct } from '@shared/hooks';
 import { useAppSelector } from '@shared/lib';
 import { paths } from '@shared/router';
 
@@ -30,6 +30,7 @@ export const CartPage: FC = () => {
 
   const [isInit, setInit] = useState<boolean>(true);
   const { clearCart } = useProduct();
+  const { addOrder } = useOrders();
 
   const totalPrice = productsList.filter((x) => cart.includes(x.id)).reduce((acc, x) => {
     acc += x.price;
@@ -43,7 +44,10 @@ export const CartPage: FC = () => {
 
     createOrder(currentCart)
       .unwrap()
-      .then(() => clearCart());
+      .then((x) => {
+        addOrder(x.id);
+        clearCart();
+      });
   };
 
   useEffect(() => {
@@ -109,7 +113,15 @@ export const CartPage: FC = () => {
               size="lg"
             >
               <i className="fas fa-shopping-cart" />
-              {`${totalPrice} ₽`}
+              <span>
+                Создать заказ на сумму
+                {' '}
+                <b>
+                  {totalPrice}
+                  {' '}
+                  ₽
+                </b>
+              </span>
             </Button>
           </div>
         )

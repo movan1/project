@@ -8,12 +8,11 @@ import {
   AdminUsersPage
 } from '@pages/admin';
 import { CartPage } from '@pages/cart';
-import { FindOrderPage } from '@pages/find-order';
 import { IndexLayout } from '@pages/layout';
 import { LoginPage } from '@pages/login';
 import { MainPage } from '@pages/main';
 import { MenuPage } from '@pages/menu';
-import { OrderPage } from '@pages/order';
+import { OrdersPage } from '@pages/orders';
 
 import { paths } from './routes';
 
@@ -55,12 +54,8 @@ export const router = createBrowserRouter([
         path: paths.cart.path
       },
       {
-        element: <FindOrderPage />,
-        path: paths.order.path
-      },
-      {
-        element: <OrderPage />,
-        path: `${paths.order.path}/:tableId`
+        element: <OrdersPage />,
+        path: paths.orders.path
       },
       {
         element: <MenuPage />,

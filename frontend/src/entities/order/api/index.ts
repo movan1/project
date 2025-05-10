@@ -48,6 +48,13 @@ export const ordersApi = createApi({
       providesTags: ['Order'],
       query: () => ''
     }),
+    getOrdersByIds: builder.mutation<Order[], number[]>({
+      query: (orders) => ({
+        body: { orders },
+        method: 'POST',
+        url: '/ordersById'
+      })
+    }),
     payUserOrder: builder.mutation<void, { tips: number } & HasId>({
       invalidatesTags: ['Order'],
       query: ({ id, ...body }) => ({
@@ -67,7 +74,7 @@ export const {
   useCreateUserOrderMutation,
   useEditOrderMutation,
   useEditOrderStatusMutation,
+  useGetOrdersByIdsMutation,
   useGetOrdersQuery,
-  useLazyGetOrderByTableQuery,
   usePayUserOrderMutation
 } = ordersApi;

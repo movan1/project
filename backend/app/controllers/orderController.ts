@@ -84,6 +84,43 @@ const getOrders = async (req: Request, res: Response) => {
   }
 }
 
+const getOrdersByIds = async (req: Request, res: Response) => {
+  const { orders } = req.body as { orders: number[] }
+
+  if(orders.length === 0) return res.status(200).json([])
+
+  const [ordersList] = await pool.query(`SELECT o.*, u.name FROM orders o LEFT JOIN users u on o.waiter_id = u.id WHERE o.id IN (${orders})`)
+
+  if(Array.isArray(ordersList) && ordersList.length > 0) {
+    const orders: Order[] = []
+
+    for(const o of ordersList) {
+      const { products, waiter_id, ...order } = o as Order
+
+      const [productsData] = await pool.query(
+        // @ts-ignore
+        `SELECT * FROM products WHERE id IN (${JSON.parse(products)})`
+      )
+
+      // @ts-ignore
+      orders.push({
+        ...order,
+        date: `${order.date}Z`,
+        // @ts-ignore
+        products: productsData.map(x => {
+          x.name = convertFromHTMLToNormal(x.name)
+          x.description = convertFromHTMLToNormal(x.description)
+          return x
+        })
+      })
+    }
+
+    return res.status(200).json(orders)
+  } else {
+    return res.status(200).json([])
+  }
+}
+
 const createUserOrder = async (req: Request, res: Response) => {
   const { products } = req.body as Pick<Order, 'products'>
 
@@ -99,7 +136,7 @@ const createUserOrder = async (req: Request, res: Response) => {
   pool.query(
     `INSERT INTO orders (date, orderType, products, totalPrice, tips, status)
     VALUES (?, ?, ?, ?, ?, ?)`,
-    [getDateForDB(), OrderType.Self, JSON.stringify(products), totalPrice, 0, Statuses.Completed]
+    [getDateForDB(), OrderType.Self, JSON.stringify(products), totalPrice, 0, Statuses.Created]
   )
     // @ts-ignore
     .then((x) => res.status(200).json({ id: x[0].insertId }))
@@ -221,31 +258,11 @@ const changeOrderStatus = async (req: Request, res: Response) => {
 
   const { status } = req.body as { status: Statuses }
 
-  const authReq = req.headers.authorization
-  if(!tokenSecret) return res.status(500).json()
-  if(!authReq) return res.status(401).json()
-  if(!authReq.includes('Bearer')) return res.status(401).json()
-
-  const { id, role } = jwt.verify(authReq.split(' ')[1], tokenSecret) as UserToken
-
   pool.query('SELECT * FROM orders WHERE id=? AND status=?', [orderId, Statuses.Created])
     .then(([ordersList]) => {
-      if (Array.isArray(ordersList) && ordersList.length === 1) {
-        if(ValidNewStatuses.includes(status)) {
-          const order = ordersList[0] as Order;
-          if(order.waiter_id === id || role === UserRoles.Admin) {
-            pool.query('UPDATE orders SET status=? WHERE id=?', [status, orderId])
-              .then(() => res.status(200).json())
-              .catch((e) => res.status(500).json(e))
-          } else {
-            return res.status(400).json('Invalid user')
-          }
-        } else {
-          return res.status(400).json('Invalid status to update')
-        }
-      } else {
-        return res.status(400).json('Not found order with Created status')
-      }
+      pool.query('UPDATE orders SET status=? WHERE id=?', [status, orderId])
+        .then(() => res.status(200).json())
+        .catch((e) => res.status(500).json(e))
     })
 }
 
@@ -317,6 +334,7 @@ export {
   WaiterOrderValidation,
   UserPayOrderValidation,
   getOrders,
+  getOrdersByIds,
   createUserOrder,
   editWaiterOrder,
   createWaiterOrder,
