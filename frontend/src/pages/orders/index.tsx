@@ -15,7 +15,6 @@ import {
 } from '@nextui-org/react';
 import classNames from 'classnames';
 
-import { usePayUserOrderMutation } from '@entities/order';
 import { useGetFreeTablesListQuery } from '@entities/table';
 
 import { ProductWeight } from '@shared/ui/product-weight';
@@ -210,6 +209,7 @@ export const OrdersPage = () => {
             <Tabs
               classNames={{ tabList: 'w-full' }}
               color="primary"
+              // @ts-expect-error select
               onSelectionChange={handleChangeType}
               selectedKey={type}
               size="lg"
@@ -232,6 +232,7 @@ export const OrdersPage = () => {
                   }}
                   label="Столик"
                   placeholder="Выберите столик"
+                  // @ts-expect-error select
                   selectedKey={table}
                   isRequired
                 >
