@@ -55,7 +55,7 @@ export const ordersApi = createApi({
         url: '/ordersById'
       })
     }),
-    payUserOrder: builder.mutation<void, { tips: number } & HasId>({
+    payUserOrder: builder.mutation<void, HasId & Pick<Order, 'orderTable'>>({
       invalidatesTags: ['Order'],
       query: ({ id, ...body }) => ({
         body,

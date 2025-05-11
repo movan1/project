@@ -5,8 +5,14 @@ import { Table } from '@shared/types';
 
 export const tablesApi = createApi({
   baseQuery: BaseQueryWithAuth('tables'),
-  endpoints: (builder) => ({ getTablesList: builder.query<Table[], void>({ query: () => '/' }) }),
+  endpoints: (builder) => ({
+    getFreeTablesList: builder.query<Table[], void>({ query: () => '/free' }),
+    getTablesList: builder.query<Table[], void>({ query: () => '/' })
+  }),
   reducerPath: 'tablesApi'
 });
 
-export const { useGetTablesListQuery } = tablesApi;
+export const {
+  useGetFreeTablesListQuery,
+  useGetTablesListQuery
+} = tablesApi;

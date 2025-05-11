@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import {
-  handleSetOrders, useEditOrderStatusMutation, useGetOrdersByIdsMutation
+  handleSetOrders, useEditOrderStatusMutation, useGetOrdersByIdsMutation, usePayUserOrderMutation
 } from '@entities/order';
 
 import { useAppDispatch } from '@shared/lib';
@@ -20,6 +20,7 @@ export const useOrders = () => {
 
   const [getOrdersByIds] = useGetOrdersByIdsMutation();
   const [changeStatus] = useEditOrderStatusMutation();
+  const [payUserOrder] = usePayUserOrderMutation();
 
   const getUserOrders = () => {
     const localOrdersIds = get(ordersKey);
@@ -58,8 +59,13 @@ export const useOrders = () => {
     }
   };
 
-  const cancelOrder = (id: number) => {
+  const cancelOrder = async (id: number) => {
     changeStatus({ id, status: Statuses.Canceled })
+      .then(() => getUserOrders());
+  };
+
+  const payOrder = async (id: number, table: null | number) => {
+    payUserOrder({ id, orderTable: table })
       .then(() => getUserOrders());
   };
 
@@ -72,6 +78,7 @@ export const useOrders = () => {
 
   return {
     addOrder,
-    cancelOrder
+    cancelOrder,
+    payOrder
   };
 };

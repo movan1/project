@@ -1,16 +1,11 @@
 import jwt from "jsonwebtoken";
-import { Request, Response } from "express";
+import {Request, Response} from "express";
 import {check, validationResult} from "express-validator";
 
-import { pool } from "../config";
+import {pool} from "../config";
 
-import {
-  FullUser, HasId, Order,
-  OrderType, Product, Statuses,
-  UserRoles, UserToken
-} from "../types";
+import {FullUser, HasId, Order, OrderType, Product, Statuses, UserRoles, UserToken} from "../types";
 import {convertFromHTMLToNormal, getDateForDB} from "../utils";
-import {exists} from "fs";
 
 const tokenSecret = process.env.TOKEN_SECRET
 
@@ -20,7 +15,7 @@ const BaseOrderValidation = [
 
 const WaiterOrderValidation = [
   ...BaseOrderValidation,
-  check('orderTable').exists().isInt().not().isString(),
+  check('orderTable').not().isString(),
 ]
 
 const UserPayOrderValidation = [
@@ -232,7 +227,10 @@ const editWaiterOrder = async (req: Request, res: Response) => {
       return false
     })
 
-  if(isTableExist && isValidOrder) {
+  if(
+    ((orderTable && isTableExist) || (!orderTable && !isTableExist))
+     && isValidOrder
+  ) {
     const totalPrice = await pool.query(`SELECT * FROM products WHERE id IN (${products})`)
       .then(([productsFromDB]) => {
         let price = 0
@@ -306,22 +304,30 @@ const payUserOrder  = async (req: Request, res: Response) => {
 
   if(errors.isEmpty()) {
     const orderId = req.params.orderId
-    const { tips } = req.body
+    const { orderTable } = req.body
+
+    const isTableInvalid = await pool.query('SELECT * FROM orders WHERE orderTable=? AND status=?', [orderTable, Statuses.Created])
+      .then(([ordersList]) => {
+        if (Array.isArray(ordersList) && ordersList.length > 0) {
+          return true
+        }
+        return false
+      })
+    if(isTableInvalid && orderTable !== null) return res.status(400).json(`Table ${orderTable} already used`)
 
     pool.query('SELECT * FROM orders WHERE id=? AND status=?', [orderId, Statuses.Created])
       .then(([ordersList]) => {
-        console.log(ordersList)
         if (Array.isArray(ordersList) && ordersList.length === 1) {
           const { totalPrice } = ordersList[0] as Order
 
           pool.query(
-            'UPDATE orders SET totalPrice=?, tips=?, status=? WHERE id=?',
-            [totalPrice + tips, tips, Statuses.Completed, orderId]
+            'UPDATE orders SET orderType=?, orderTable=?, status=? WHERE id=?',
+            [OrderType[orderTable ? 'Hall' : 'Self'], orderTable, Statuses.Completed, orderId]
           )
             .then(() => res.status(200).json())
             .catch((e) => res.status(500).json(e))
         } else {
-          return res.status(400).json('Not found order with Created status')
+          return res.status(400).json('Not found order')
         }
       })
   } else {

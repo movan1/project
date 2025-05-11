@@ -1,25 +1,47 @@
 import { useState } from 'react';
 
 import {
-  Button, Chip, Image, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure
+  Button,
+  Chip,
+  Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Select, SelectItem,
+  Tab,
+  Tabs,
+  useDisclosure
 } from '@nextui-org/react';
 import classNames from 'classnames';
+
+import { usePayUserOrderMutation } from '@entities/order';
+import { useGetFreeTablesListQuery } from '@entities/table';
 
 import { ProductWeight } from '@shared/ui/product-weight';
 
 import { useOrders } from '@shared/hooks';
 import { useAppSelector } from '@shared/lib';
-import { Statuses } from '@shared/types';
+import { OrderType, Statuses } from '@shared/types';
 
 export const OrdersPage = () => {
   const { orders } = useAppSelector((store) => store.orders);
 
+  const { data: freeTables = [] } = useGetFreeTablesListQuery();
+
   const {
     isOpen, onClose, onOpen, onOpenChange
   } = useDisclosure();
-  const { cancelOrder } = useOrders();
-
+  const {
+    isOpen: isOpenPay,
+    onClose: onClosePay,
+    onOpen: onOpenPay,
+    onOpenChange: onOpenChangePay
+  } = useDisclosure();
+  const { cancelOrder, payOrder } = useOrders();
   const [orderId, setOrderId] = useState<null | number>(null);
+  const [type, setType] = useState<OrderType>(OrderType.Self);
+  const [table, setTable] = useState<null | number>(null);
 
   const handleOpenModal = (id: number) => {
     setOrderId(id);
@@ -29,6 +51,34 @@ export const OrdersPage = () => {
   const handleCloseModal = () => {
     setOrderId(null);
     onClose();
+  };
+
+  const handleOpenPayModal = (id: number) => {
+    setOrderId(id);
+    onOpenPay();
+  };
+
+  const handleClosePayModal = () => {
+    setOrderId(null);
+    setType(OrderType.Self);
+    setTable(null);
+    onClosePay();
+  };
+
+  const handleChangeType = (x: OrderType) => {
+    setType(x);
+    setTable(null);
+  };
+
+  const handleCancelOrder = () => {
+    if (typeof orderId !== 'number') return;
+    cancelOrder(orderId).then(() => handleCloseModal());
+  };
+
+  const handlePayOrder = () => {
+    if (typeof orderId !== 'number') return;
+    payOrder(orderId, table)
+      .then(() => handleClosePayModal());
   };
 
   return (
@@ -57,6 +107,7 @@ export const OrdersPage = () => {
               </div>
               { order.status === Statuses.Completed && <Chip color="success" size="sm">Оплачен</Chip> }
               { order.status === Statuses.Canceled && <Chip color="danger" size="sm">Отменен</Chip> }
+              { order.status === Statuses.Created && <Chip color="primary" size="sm">Ожидает оплаты</Chip> }
             </div>
             <div>
               {
@@ -105,6 +156,7 @@ export const OrdersPage = () => {
                   <Button
                     className="grow"
                     color="success"
+                    onPress={() => handleOpenPayModal(order.id)}
                   >
                     Оплатить
                     {' '}
@@ -127,7 +179,6 @@ export const OrdersPage = () => {
         size="sm"
       >
         <ModalContent>
-          <ModalHeader className="text-center" />
           <ModalBody>
             <div className="text-xl text-center font-bold">
               Отменить заказ #
@@ -137,9 +188,70 @@ export const OrdersPage = () => {
             <Button
               className="grow w-2/3 mx-auto"
               color="danger"
-              onPress={() => orderId !== null && cancelOrder(orderId)}
+              onPress={handleCancelOrder}
             >
               Отменить
+            </Button>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isOpenPay}
+        onClose={handleClosePayModal}
+        onOpenChange={onOpenChangePay}
+        size="sm"
+      >
+        <ModalContent>
+          <ModalHeader className="text-center">
+            Оплата заказа #
+            {orderId}
+          </ModalHeader>
+          <ModalBody>
+            <Tabs
+              classNames={{ tabList: 'w-full' }}
+              color="primary"
+              onSelectionChange={handleChangeType}
+              selectedKey={type}
+              size="lg"
+            >
+              <Tab
+                key={OrderType.Self}
+                title="Самовывоз"
+              />
+              <Tab
+                key={OrderType.Hall}
+                title="За столиком"
+              >
+                <Select
+                  onChange={(x) => {
+                    if (x.target.value !== '') {
+                      setTable(Number(x.target.value));
+                    } else {
+                      setTable(null);
+                    }
+                  }}
+                  label="Столик"
+                  placeholder="Выберите столик"
+                  selectedKey={table}
+                  isRequired
+                >
+                  {
+                     freeTables.map((x) => (
+                       <SelectItem key={x.id}>
+                         {x.description}
+                       </SelectItem>
+                     ))
+                   }
+                </Select>
+              </Tab>
+            </Tabs>
+            <Button
+              className="grow"
+              color="success"
+              isDisabled={Number(type) === OrderType.Hall && table === null}
+              onPress={handlePayOrder}
+            >
+              Оплатить
             </Button>
           </ModalBody>
         </ModalContent>
