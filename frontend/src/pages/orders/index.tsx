@@ -173,7 +173,7 @@ export const OrdersPage = () => {
                   <Countdown
                     date={order.created_at}
                     onEnd={getUserOrders}
-                    seconds={60 * 1}
+                    seconds={60 * 5}
                   />
                 </div>
               )
