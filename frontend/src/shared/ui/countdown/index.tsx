@@ -13,7 +13,7 @@ const baseState = {
   seconds: '00'
 };
 
-const timerNumberClassName = 'flex items-center justify-center rounded m-0.5 text-white text-3xl font-mono grow bg-slate-500';
+const timerNumberClassName = 'flex items-center justify-center rounded text-white text-sm font-mono grow';
 
 export const Countdown: FC<CountdownProps> = ({
   date, onEnd, seconds
@@ -44,10 +44,10 @@ export const Countdown: FC<CountdownProps> = ({
   }, []);
 
   return (
-    <div className="bg-gray-800 inline-flex grow rounded-md h-[60px] p-1 w-56">
+    <div className="bg-primary inline-flex grow rounded-full py-1 px-2 h-6">
       <div className={timerNumberClassName}>{time.minutes[0]}</div>
       <div className={timerNumberClassName}>{time.minutes[1]}</div>
-      <div className="text-2xl text-white flex items-center font-bold -translate-y-0.5 mx-1">:</div>
+      <div className="text-sm text-white flex items-center font-bold -translate-y-0.5 mx-0.5">:</div>
       <div className={timerNumberClassName}>{time.seconds[0]}</div>
       <div className={timerNumberClassName}>{time.seconds[1]}</div>
     </div>

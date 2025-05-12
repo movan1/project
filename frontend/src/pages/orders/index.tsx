@@ -98,18 +98,27 @@ export const OrdersPage = () => {
             key={order.id}
           >
             <div className="flex justify-between items-start mb-3">
-              <div className="flex items-end gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-end sm:gap-3">
                 <div className="text-lg font-bold">
                   Заказ #
                   {order.id}
                 </div>
-                <span className="text-sm text-gray-500 pb-0.5">
+                <span className="text-sm text-gray-700 pb-0.5">
                   {new Date(order.created_at).toLocaleString()}
                 </span>
               </div>
               { order.status === Statuses.Completed && <Chip color="success" size="sm">Оплачен</Chip> }
               { order.status === Statuses.Canceled && <Chip color="danger" size="sm">Отменен</Chip> }
-              { order.status === Statuses.Created && <Chip color="primary" size="sm">Ожидает оплаты</Chip> }
+              { order.status === Statuses.Created && (
+                <div className="flex flex-col-reverse sm:flex-row items-center gap-3">
+                  <Countdown
+                    date={order.created_at}
+                    onEnd={getUserOrders}
+                    seconds={60 * 5}
+                  />
+                  <Chip color="primary" size="sm">Ожидает оплаты</Chip>
+                </div>
+              ) }
             </div>
             <div>
               {
@@ -147,34 +156,27 @@ export const OrdersPage = () => {
             </div>
             {
               order.status === Statuses.Created && (
-                <div className="mt-3 gap-2">
-                  <div className="grid grid-cols-2 gap-2 mb-2">
-                    <Button
-                      className="grow"
-                      color="danger"
-                      onPress={() => handleOpenModal(order.id)}
-                    >
-                      Отменить
-                    </Button>
-                    <Button
-                      className="grow"
-                      color="success"
-                      onPress={() => handleOpenPayModal(order.id)}
-                    >
-                      Оплатить
+                <div className="grid grid-cols-2 gap-2 mt-3">
+                  <Button
+                    className="grow"
+                    color="danger"
+                    onPress={() => handleOpenModal(order.id)}
+                  >
+                    Отменить
+                  </Button>
+                  <Button
+                    className="grow text-white"
+                    color="success"
+                    onPress={() => handleOpenPayModal(order.id)}
+                  >
+                    Оплатить
+                    {' '}
+                    <b>
+                      {order.totalPrice}
                       {' '}
-                      <b>
-                        {order.totalPrice}
-                        {' '}
-                        ₽
-                      </b>
-                    </Button>
-                  </div>
-                  <Countdown
-                    date={order.created_at}
-                    onEnd={getUserOrders}
-                    seconds={60 * 5}
-                  />
+                      ₽
+                    </b>
+                  </Button>
                 </div>
               )
             }
@@ -240,25 +242,34 @@ export const OrdersPage = () => {
                       setTable(null);
                     }
                   }}
+                  renderValue={(items) => items.map((x) => (
+                    <div key={x.key}>
+                      Стол
+                      {' '}
+                      {x.data?.id}
+                      {' '}
+                      |
+                      {' '}
+                      {x.data?.description}
+                    </div>
+                  ))}
+                  items={freeTables}
                   label="Столик"
                   placeholder="Выберите столик"
-                  // @ts-expect-error select
-                  selectedKey={table}
+                  selectedKeys={[String(table)]}
                   isRequired
                 >
-                  {
-                     freeTables.map((x) => (
-                       <SelectItem key={x.id}>
-                         Стол
-                         {' '}
-                         {x.id}
-                         {' '}
-                         |
-                         {' '}
-                         {x.description}
-                       </SelectItem>
-                     ))
-                   }
+                  {(x) => (
+                    <SelectItem key={String(x.id)}>
+                      Стол
+                      {' '}
+                      {x.id}
+                      {' '}
+                      |
+                      {' '}
+                      {x.description}
+                    </SelectItem>
+                  )}
                 </Select>
               </Tab>
             </Tabs>

@@ -4,7 +4,7 @@ import { pool } from "../config";
 import { Statuses } from "../types";
 
 export const startSchedules = () => {
-  cron.schedule('*/1 * * * * *', () => {
+  cron.schedule('* * * * * *', () => {
     pool.query(`
       UPDATE orders
       SET status=?
