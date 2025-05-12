@@ -27,8 +27,5 @@ export const convertFromHTMLToNormal = (x: string): string => {
 }
 
 export const getDateForDB = (): string => {
-  const date = new Date().toISOString();
-  const dateDate = date.split('T')[0]
-  const dateTime = date.split('T')[1].slice(0, -2)
-  return `${dateDate} ${dateTime}`
+  return new Date().toISOString();
 }

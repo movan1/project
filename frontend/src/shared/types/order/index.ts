@@ -1,7 +1,7 @@
 import { Product } from '@shared/types';
 
 export type Order = {
-  date: string
+  created_at: string
   id: number
   name: null | string
   orderTable: null | number

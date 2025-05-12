@@ -17,6 +17,7 @@ import classNames from 'classnames';
 
 import { useGetFreeTablesListQuery } from '@entities/table';
 
+import { Countdown } from '@shared/ui/countdown';
 import { ProductWeight } from '@shared/ui/product-weight';
 
 import { useOrders } from '@shared/hooks';
@@ -37,7 +38,9 @@ export const OrdersPage = () => {
     onOpen: onOpenPay,
     onOpenChange: onOpenChangePay
   } = useDisclosure();
-  const { cancelOrder, payOrder } = useOrders();
+  const {
+    cancelOrder, getUserOrders, payOrder
+  } = useOrders();
   const [orderId, setOrderId] = useState<null | number>(null);
   const [type, setType] = useState<OrderType>(OrderType.Self);
   const [table, setTable] = useState<null | number>(null);
@@ -101,7 +104,7 @@ export const OrdersPage = () => {
                   {order.id}
                 </div>
                 <span className="text-sm text-gray-500 pb-0.5">
-                  {new Date(order.date).toLocaleString()}
+                  {new Date(order.created_at).toLocaleString()}
                 </span>
               </div>
               { order.status === Statuses.Completed && <Chip color="success" size="sm">Оплачен</Chip> }
@@ -144,27 +147,34 @@ export const OrdersPage = () => {
             </div>
             {
               order.status === Statuses.Created && (
-                <div className="grid grid-cols-2 gap-2 mt-3">
-                  <Button
-                    className="grow"
-                    color="danger"
-                    onPress={() => handleOpenModal(order.id)}
-                  >
-                    Отменить
-                  </Button>
-                  <Button
-                    className="grow"
-                    color="success"
-                    onPress={() => handleOpenPayModal(order.id)}
-                  >
-                    Оплатить
-                    {' '}
-                    <b>
-                      {order.totalPrice}
+                <div className="mt-3 gap-2">
+                  <div className="grid grid-cols-2 gap-2 mb-2">
+                    <Button
+                      className="grow"
+                      color="danger"
+                      onPress={() => handleOpenModal(order.id)}
+                    >
+                      Отменить
+                    </Button>
+                    <Button
+                      className="grow"
+                      color="success"
+                      onPress={() => handleOpenPayModal(order.id)}
+                    >
+                      Оплатить
                       {' '}
-                      ₽
-                    </b>
-                  </Button>
+                      <b>
+                        {order.totalPrice}
+                        {' '}
+                        ₽
+                      </b>
+                    </Button>
+                  </div>
+                  <Countdown
+                    date={order.created_at}
+                    onEnd={getUserOrders}
+                    seconds={60 * 5}
+                  />
                 </div>
               )
             }
@@ -239,6 +249,12 @@ export const OrdersPage = () => {
                   {
                      freeTables.map((x) => (
                        <SelectItem key={x.id}>
+                         Стол
+                         {' '}
+                         {x.id}
+                         {' '}
+                         |
+                         {' '}
                          {x.description}
                        </SelectItem>
                      ))

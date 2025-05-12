@@ -1,6 +1,6 @@
 export type Order = {
   id: number
-  date: string
+  created_at: string
   orderType: OrderType
   products: number[]
   totalPrice: number

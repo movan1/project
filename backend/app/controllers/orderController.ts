@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 import {Request, Response} from "express";
-import {check, validationResult} from "express-validator";
+import { check, validationResult } from "express-validator";
 
-import {pool} from "../config";
+import { pool } from "../config";
 
-import {FullUser, HasId, Order, OrderType, Product, Statuses, UserRoles, UserToken} from "../types";
-import {convertFromHTMLToNormal, getDateForDB} from "../utils";
+import { FullUser, HasId, Order, OrderType, Product, Statuses, UserRoles, UserToken } from "../types";
+import { convertFromHTMLToNormal, getDateForDB } from "../utils";
 
 const tokenSecret = process.env.TOKEN_SECRET
 
@@ -63,7 +63,7 @@ const getOrders = async (req: Request, res: Response) => {
           // @ts-ignore
           orders.push({
             ...order,
-            date: `${order.date}Z`,
+            created_at: order.created_at,
             // @ts-ignore
             products: productsData.map(x => {
               x.name = convertFromHTMLToNormal(x.name)
@@ -96,11 +96,11 @@ const getOrdersByIds = async (req: Request, res: Response) => {
         // @ts-ignore
         `SELECT * FROM products WHERE id IN (${JSON.parse(products)})`
       )
-
       // @ts-ignore
       orders.push({
         ...order,
-        date: `${order.date}Z`,
+        // @ts-ignore
+        created_at: new Date(order.created_at),
         // @ts-ignore
         products: productsData.map(x => {
           x.name = convertFromHTMLToNormal(x.name)
@@ -129,7 +129,7 @@ const createUserOrder = async (req: Request, res: Response) => {
     })
 
   pool.query(
-    `INSERT INTO orders (date, orderType, products, totalPrice, tips, status)
+    `INSERT INTO orders (created_at, orderType, products, totalPrice, tips, status)
     VALUES (?, ?, ?, ?, ?, ?)`,
     [getDateForDB(), OrderType.Self, JSON.stringify(products), totalPrice, 0, Statuses.Created]
   )
@@ -185,7 +185,7 @@ const createWaiterOrder = async (req: Request, res: Response) => {
 
   if(isWaiterExist && isTableExist) {
     pool.query(
-      `INSERT INTO orders (date, orderType, products, totalPrice, tips, waiter_id, orderTable, status)
+      `INSERT INTO orders (created_at, orderType, products, totalPrice, tips, waiter_id, orderTable, status)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [getDateForDB(), OrderType.Hall, JSON.stringify(products), totalPrice, 0, id, orderTable, Statuses.Created]
     )
@@ -283,7 +283,7 @@ const getOrderByTable = async (req: Request, res: Response) => {
 
       return res.status(200).json(({
         ...order,
-        date: `${order.date.toLocaleString()}Z`,
+        date: order.created_at,
         // @ts-ignore
         products: productsData.map(x => {
           x.name = convertFromHTMLToNormal(x.name)

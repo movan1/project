@@ -6,6 +6,7 @@ import {
   tablesApi,
   userApi
 } from "./routes";
+import { startSchedules } from "./schedules";
 
 const baseApiUrl = '/api/v1'
 const app = express();
@@ -18,5 +19,7 @@ app.use(`${baseApiUrl}/users`, userApi)
 app.use(`${baseApiUrl}/menu`, menuApi)
 app.use(`${baseApiUrl}/orders`, ordersApi)
 app.use(`${baseApiUrl}/tables`, tablesApi)
+
+startSchedules()
 
 app.listen(port, () => console.log(`Running on port ${port}`));

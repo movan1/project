@@ -110,7 +110,7 @@ export const AdminOrdersPage: FC = () => {
 
   const renderCell = (row: Order, columnKey: number | string) => {
     if (columnKey === 'date') {
-      return new Date(row.date).toLocaleString();
+      return new Date(row.created_at).toLocaleString();
     }
 
     if (columnKey === 'orderType') {

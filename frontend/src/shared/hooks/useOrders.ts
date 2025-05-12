@@ -79,6 +79,7 @@ export const useOrders = () => {
   return {
     addOrder,
     cancelOrder,
+    getUserOrders,
     payOrder
   };
 };
