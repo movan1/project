@@ -227,16 +227,6 @@ export const AdminOrdersPage: FC = () => {
   return (
     <>
       <div className="flex flex-col gap-4">
-        <div className="flex justify-end">
-          <Button
-            color="primary"
-            endContent={<i className="fas fa-plus" />}
-            onClick={onOpen}
-            variant="shadow"
-          >
-            Создать заказ
-          </Button>
-        </div>
         <Table aria-label="users table">
           <TableHeader>
             {columns.map((column) => (
