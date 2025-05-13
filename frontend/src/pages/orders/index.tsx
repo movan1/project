@@ -114,7 +114,7 @@ export const OrdersPage = () => {
                   <Countdown
                     date={order.created_at}
                     onEnd={getUserOrders}
-                    seconds={60 * 5}
+                    seconds={60}
                   />
                   <Chip color="primary" size="sm">Ожидает оплаты</Chip>
                 </div>

@@ -10,7 +10,7 @@ export const startSchedules = () => {
       SET status=?
       WHERE DATE_ADD(
         STR_TO_DATE(SUBSTRING(created_at, 1, 19), '%Y-%m-%dT%H:%i:%s'),
-        INTERVAL 5 MINUTE
+        INTERVAL 1 MINUTE
       ) < UTC_TIMESTAMP() AND status=? AND id IS NOT NULL;
     `, [Statuses.Canceled, Statuses.Created]);
   })
